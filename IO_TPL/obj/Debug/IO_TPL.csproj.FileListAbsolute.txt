@@ -1,0 +1,6 @@
+d:\users\szymon\documents\visual studio 2013\Projects\IO_TPL\IO_TPL\bin\Debug\IO_TPL.exe.config
+d:\users\szymon\documents\visual studio 2013\Projects\IO_TPL\IO_TPL\bin\Debug\IO_TPL.exe
+d:\users\szymon\documents\visual studio 2013\Projects\IO_TPL\IO_TPL\bin\Debug\IO_TPL.pdb
+d:\users\szymon\documents\visual studio 2013\Projects\IO_TPL\IO_TPL\obj\Debug\IO_TPL.csprojResolveAssemblyReference.cache
+d:\users\szymon\documents\visual studio 2013\Projects\IO_TPL\IO_TPL\obj\Debug\IO_TPL.exe
+d:\users\szymon\documents\visual studio 2013\Projects\IO_TPL\IO_TPL\obj\Debug\IO_TPL.pdb
