@@ -22,7 +22,7 @@ namespace IO_TPL
         static public void randValueForTab(long size)
         {
             tab = new long[size];
-            
+
             Parallel.Invoke(() =>
             {
                 initTabThr(1);
@@ -80,11 +80,11 @@ namespace IO_TPL
 
         static public void minOneThr(long[] tab)
         {
-            long minV = maxRand+1;
+            long minV = maxRand + 1;
 
             sw.Start();
-            foreach (var elem in tab) 
-                if (minV > elem) 
+            foreach (var elem in tab)
+                if (minV > elem)
                     minV = elem;
             sw.Stop();
 
@@ -93,6 +93,7 @@ namespace IO_TPL
             sw.Reset();
         }
 
+        static private System.Object lockThis = new System.Object();
         static void minOneThrFromAll(object cT)
         {
             long startOfRange = 0;
@@ -100,14 +101,20 @@ namespace IO_TPL
             long endOfRange = (tab.Length / quantThr) * (long)cT;
             startOfRange = ((tab.Length / quantThr) * (long)cT - (tab.Length / quantThr));
 
-            for (long i = startOfRange; i < endOfRange; i++) 
-                if (minThr > tab[i]) 
+            for (long i = startOfRange; i < endOfRange; i++)
+                if (minThr > tab[i])
                     minThr = tab[i];
 
-            //Console.Out.WriteLine("\n\nMinimalna wartość w tablicy dla watku: " + minThr);
+            Console.Out.WriteLine("Minimalna wartość w tablicy dla watku: " + minThr + " cT: " + (long)cT);
 
-            if (min > minThr) 
-                min = minThr;
+            lock (lockThis)
+            {
+                if (min > minThr)
+                {
+                    //Thread.Sleep((int)((long)cT) * 1000);
+                    min = minThr;
+                }
+            }
         }
 
 
@@ -118,7 +125,7 @@ namespace IO_TPL
             {
                 minOneThrFromAll(++countThr);
             });
-            Console.Out.WriteLine("\n\nMinimalna wartość w tablicy to: " + min);
+            Console.Out.WriteLine("Minimalna wartość w tablicy to: " + min);
             sw.Stop();
             Console.WriteLine("Czas obliczanie dla Parallel.For(): " + sw.ElapsedMilliseconds + " [ms]");
             sw.Reset();
@@ -133,9 +140,9 @@ namespace IO_TPL
             long size = 100000000;
             randValueForTab(size);
             minOneThr(tab);
-            Console.Out.WriteLine("\n------------------------------------------------------------------");
+            Console.Out.WriteLine("------------------------------------------------------------------");
             minAllThr(tab);
-
+            Console.Out.WriteLine("------------------------------------------------------------------");
         }
     }
 }
