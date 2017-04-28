@@ -13,23 +13,74 @@ namespace IO_TPL
         static public long[] tab;
         static public int maxRand = 100000000;
         static public int minRand = 100;
-        static long min = minRand*minRand;
+        static long min = maxRand + 1;
         static Stopwatch sw;
         static long quantThr;
         static long countThr = 0;
+        static public Random random;
 
         static public void randValueForTab(long size)
         {
             tab = new long[size];
-            Random random = new Random();
+            
+            Parallel.Invoke(() =>
+            {
+                initTabThr(1);
+            },
+            () =>
+            {
+                initTabThr(2);
+            },
+            () =>
+            {
+                initTabThr(3);
+            },
+            () =>
+            {
+                initTabThr(4);
+            },
+            () =>
+            {
+                initTabThr(5);
+            },
+            () =>
+            {
+                initTabThr(6);
+            },
+            () =>
+            {
+                initTabThr(7);
+            },
+            () =>
+            {
+                initTabThr(8);
+            },
+            () =>
+            {
+                initTabThr(9);
+            },
+            () =>
+            {
+                initTabThr(10);
+            }
+            );
 
-            for (long i = 0; i < size; i++) 
-                tab[i] = random.Next(1000,100000000);
+        }
+
+        static public void initTabThr(long cT)
+        {
+            long startOfRange = 0;
+            long endOfRange = (tab.Length / quantThr) * cT;
+            startOfRange = ((tab.Length / quantThr) * cT - (tab.Length / quantThr));
+
+            for (long i = startOfRange; i < endOfRange; i++)
+                tab[i] = random.Next(minRand, maxRand);
+
         }
 
         static public void minOneThr(long[] tab)
         {
-            long minV = 100001;
+            long minV = maxRand+1;
 
             sw.Start();
             foreach (var elem in tab) 
@@ -44,17 +95,16 @@ namespace IO_TPL
 
         static void minOneThrFromAll(object cT)
         {
-            countThr++;
-            cT = countThr;
-
             long startOfRange = 0;
-            long minThr = 100001;
+            long minThr = maxRand + 1;
             long endOfRange = (tab.Length / quantThr) * (long)cT;
             startOfRange = ((tab.Length / quantThr) * (long)cT - (tab.Length / quantThr));
 
             for (long i = startOfRange; i < endOfRange; i++) 
                 if (minThr > tab[i]) 
                     minThr = tab[i];
+
+            //Console.Out.WriteLine("\n\nMinimalna wartość w tablicy dla watku: " + minThr);
 
             if (min > minThr) 
                 min = minThr;
@@ -64,9 +114,9 @@ namespace IO_TPL
         static void minAllThr(long[] tab)
         {
             sw.Start();
-            Parallel.For(0, quantThr, (i) =>
+            Parallel.For(0, quantThr, (cT) =>
             {
-                minOneThrFromAll(i + 1);
+                minOneThrFromAll(++countThr);
             });
             Console.Out.WriteLine("\n\nMinimalna wartość w tablicy to: " + min);
             sw.Stop();
@@ -77,6 +127,7 @@ namespace IO_TPL
 
         static void Main(string[] args)
         {
+            random = new Random(System.Environment.TickCount);
             quantThr = 10;
             sw = new Stopwatch();
             long size = 100000000;
